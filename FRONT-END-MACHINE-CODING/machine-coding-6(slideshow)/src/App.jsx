@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./App.css";
-
 const images = [
   {
     id: 1,
@@ -27,24 +26,69 @@ const images = [
     caption: "Image 4",
   },
 ];
-
 function App() {
-  const [count, setCount] = useState(0);
+  const [selectedId, setSelectedId] = useState(1);
+
+  const handlePrvClick = () => {
+    setSelectedId((prvSelctedId) => {
+      let nextId = prvSelctedId - 1;
+      console.log("nextId: ", nextId);
+      if (nextId == 0) {
+        nextId = images[images.length - 1].id;
+      }
+      return nextId;
+    });
+  };
+
+  const handleNextClick = () => {
+    setSelectedId((prvSelctedId) => {
+      let nextId = prvSelctedId + 1;
+      console.log("nextId: ", nextId);
+      if (nextId == images.length) {
+        nextId = 1;
+      }
+      return nextId;
+    });
+  };
 
   return (
     <>
-      <div>Hello everyone</div>
       <div className="card">
-        <Slider />
+        {images.map((image) => (
+          <Slider
+            key={image.id}
+            imageId={image.id}
+            imageUrl={image.image_url}
+            caption={image.caption}
+            selectedId={selectedId}
+            handlePrvClick={handlePrvClick}
+            handleNextClick={handleNextClick}
+          />
+        ))}
       </div>
     </>
   );
 }
 
-const Slider = () => {
+const Slider = ({
+  imageId,
+  imageUrl,
+  caption,
+  selectedId,
+  handlePrvClick,
+  handleNextClick,
+}) => {
   return (
     <>
-      <img src={images[0].image_url} />
+      {selectedId == imageId && (
+        <div>
+          <div className="button-container">
+            <button onClick={handlePrvClick}>prv</button>
+            <button onClick={handleNextClick}>next</button>
+          </div>
+          <img src={imageUrl} />
+        </div>
+      )}
     </>
   );
 };
